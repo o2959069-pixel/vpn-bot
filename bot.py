@@ -1,22 +1,35 @@
-import os
 from aiogram import Bot, Dispatcher, executor, types
+from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
+import os
 
-# Токен берём из переменной окружения (Render -> Переменные окружения)
-BOT_TOKEN = os.getenv("8444347725:AAEIjERypbS7uZEtLvTU3kteMGfDTVTEqzU")
+TOKEN = os.getenv("8444347725:AAEIjERypbS7uZEtLvTU3kteMGfDTVTEqzU")  # токен будет храниться в Render
 
-bot = Bot(token=BOT_TOKEN)
+bot = Bot(token=TOKEN)
 dp = Dispatcher(bot)
 
-# Команда /start
+# Главное меню
+menu = ReplyKeyboardMarkup(resize_keyboard=True)
+menu.add(KeyboardButton("📡 Подключиться"))
+menu.add(KeyboardButton("🔑 Установить VPN"))
+menu.add(KeyboardButton("🎁 Пригласить друзей"))
+menu.add(KeyboardButton("🆘 Помощь"))
+menu.add(KeyboardButton("📄 Оферта"))
+menu.add(KeyboardButton("💵 Заработать с нами"))
+
 @dp.message_handler(commands=['start'])
 async def start(msg: types.Message):
-    await msg.reply("Привет! 👋 Напиши /key, чтобы получить VPN ключ 🔑")
+    await msg.answer("Привет! Добро пожаловать в BoomVPN 👋", reply_markup=menu)
 
-# Команда /key
-@dp.message_handler(commands=['key'])
-async def key(msg: types.Message):
-    # Здесь можно вставить свой реальный ключ VPN или временный
-    await msg.reply("vless://1234-5678-90ab-cdef@1.2.3.4:443")
+@dp.message_handler(lambda msg: msg.text == "📡 Подключиться")
+async def connect(msg: types.Message):
+    await msg.answer("Твой ключ: vless://1234-5678-90ab-cdef@1.2.3.4:443")
 
-if __name__ == "__main__":
-    executor.start_polling(dp, skip_updates=True)
+@dp.message_handler(lambda msg: msg.text == "🔑 Установить VPN")
+async def install(msg: types.Message):
+    await msg.answer("Скачай приложение VPN и вставь ключ, который я тебе дам.")
+
+@dp.message_handler(lambda msg: msg.text == "🎁 Пригласить друзей")
+async def friends(msg: types.Message):
+    await msg.answer("Поделись ссылкой на бота и получи +10 дней доступа 😉")
+
+@dp.message_handler(lambda msg: msg.text == "🆘
